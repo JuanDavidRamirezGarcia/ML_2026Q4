@@ -1,0 +1,42 @@
+REPORTE DEL DATAFRAME
+============================================================
+Filas: 91
+Columnas: 11
+Duplicados: 0
+
+Columnas y tipos:
+- idx: int64
+- age: int64
+- gender: object
+- weight: int64
+- height: int64
+- exercise_frequency: int64
+- smoking_status: object
+- diet_type: object
+- family_history_of_diseases: object
+- medical_history: object
+- risk_level: object
+
+Valores nulos por columna:
+- idx: 0
+- age: 0
+- gender: 0
+- weight: 0
+- height: 0
+- exercise_frequency: 0
+- smoking_status: 0
+- diet_type: 0
+- family_history_of_diseases: 0
+- medical_history: 0
+- risk_level: 0
+
+Estadísticas numéricas:
+          idx     age   weight   height  exercise_frequency
+count  91.000  91.000   91.000   91.000              91.000
+mean   49.055  41.253   78.088  170.341               2.505
+std    29.274  10.557   10.855    7.850               1.649
+min     0.000  22.000   56.000  155.000               0.000
+25%    24.000  31.500   69.500  165.000               1.000
+50%    49.000  44.000   77.000  170.000               2.000
+75%    74.000  50.000   88.000  175.500               4.000
+max    99.000  65.000  102.000  185.000               6.000
