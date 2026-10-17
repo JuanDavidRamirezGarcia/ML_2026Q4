@@ -54,7 +54,7 @@ jobs:
             --execute \
             --inplace \
             --ExecutePreprocessor.timeout=1800 \
-            Entrega__1.ipynb
+            Entrega_1.ipynb
 
       - name: Confirmar cambios generados
         run: |
