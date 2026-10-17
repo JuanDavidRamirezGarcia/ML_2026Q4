@@ -45,7 +45,7 @@ jobs:
           find src/sincronicas/datos -mindepth 1 -delete
           find src/sincronicas/reportes -mindepth 1 -delete
 
-      - name: Ejecutar Semana_1SINC.ipynb
+      - name: Ejecutar Entrega_1.ipynb
         working-directory: src/sincronicas
         run: |
           source ../../.venv/bin/activate
