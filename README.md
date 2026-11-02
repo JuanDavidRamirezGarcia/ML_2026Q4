@@ -91,6 +91,39 @@ Al responder **Sí** o **No**, divide a los pacientes en dos subgrupos: los que 
 
 ---
 
+---
+
+## 📋 Hallazgos y Conclusiones del Negocio
+
+###  Respuesta a la Pregunta de Negocio
+**¿Podemos predecir en tiempo real si un paciente requiere atención Normal, Elevada o Crítica analizando sus signos vitales?**
+
+**Sí**. El modelo mostró que, utilizando signos vitales como frecuencia cardíaca, presión arterial y temperatura corporal, es posible clasificar el nivel de riesgo de un paciente con un **90%** de precisión. Esto permite al equipo médico priorizar la atención en urgencias, garantizando que las personas en estado crítico reciban atención inmediata y optimizando los recursos de la sala de urgencias.
+
+---
+
+### Hallazgos Principales 
+
+- En la muestra evaluada, el modelo alcanzó un Recall de 1.00 en la categoría crítica, detectando a los 6 pacientes graves reales sin omitir ninguno en esta prueba.
+- La frecuencia cardíaca (`heart_rate`) concentró el 87.03% del peso en las decisiones del árbol, siendo la variable principal que usó el algoritmo para dividir a los pacientes. La presión arterial aportó un 10.31% y la temperatura un 2.66%.
+- La precisión en la categoría crítica fue de 0.75. Esto significa que de cada 4 alertas de paciente grave, 3 correspondían a casos críticos reales y 1 era un paciente de riesgo elevado clasificado como crítico por precaución.
+- El F1-Score promedio fue de 0.89, lo que indica un comportamiento balanceado entre las distintas categorías dentro de este conjunto de datos.
+
+---
+
+### Confiabilidad, Limitaciones y Oportunidades
+
+-  Los resultados deben tomarse con cautela. Las métricas se calcularon sobre un grupo de prueba muy pequeño de apenas 20 pacientes. Con una muestra tan reducida no se puede garantizar que el modelo mantenga el mismo rendimiento, y los porcentajes de acierto podrían cambiar significativamente al evaluarlo con un volumen de datos más grande o real.
+-  En la estructura del árbol, la saturación de oxígeno (`oxygen_saturation`) tuvo una importancia del 0.00%. Esto no significa que el oxígeno no sea relevante clínicamente, sino que para este conjunto específico de datos el algoritmo logró dividir los grupos usando las otras variables.
+-  Existe la oportunidad de recolectar una base de datos más amplia y diversa para reentrenar el modelo. Esto permitirá verificar si la saturación de oxígeno toma relevancia en otros escenarios clínicos y evaluar si se puede ajustar la precisión para evitar falsas alarmas de pacientes críticos.
+
+---
+
+###  Recomendacion
+
+Ampliar el dataset con más registros de urgencias para evaluar la estabilidad de las métricas antes de considerar cualquier despliegue operativo.
+---
+
 ## 📁 Estructura del Repositorio
 
 ```text
