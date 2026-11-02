@@ -1,0 +1,44 @@
+==================================================
+REPORTE AUTOMATIZADO DE CLASIFICACIÓN (ÁRBOL)
+Fecha de ejecución: 2026-11-02 15:48:55
+==================================================
+
+1. IDENTIFICACIÓN DEL DATASET Y PREPROCESAMIENTO
+--------------------------------------------------
+Dataset: Datos biométricos y signos vitales.
+Preprocesamiento: Se separó la variable 'blood_pressure' en 'systolic_bp' y 'diastolic_bp'.
+Se descartaron metadatos ('idx', 'timestamp') para dejar únicamente información clínica.
+
+2. MODELO DE CLASIFICACIÓN
+--------------------------------------------------
+- Objetivo: Clasificar el nivel de riesgo de salud (risk_category).
+- Variables Predictoras (X): Ritmo cardíaco, presión sistólica, presión diastólica,
+  temperatura corporal y saturación de oxígeno.
+- Algoritmo: Árbol de Decisión (DecisionTreeClassifier).
+- Configuración: Train/Test al 80/20 de forma estratificada, random_state=42.
+
+3. RESULTADOS GLOBALES
+--------------------------------------------------
+- Accuracy: 0.90 (18/20 casos correctos)
+- F1-Score (Macro): 0.89
+- Precision (Críticos): 0.00
+- Recall (Críticos): 0.00
+
+4. INTERPRETACIÓN CLÍNICA
+--------------------------------------------------
+- Accuracy: Mide el porcentaje global de aciertos del modelo. Acertó la categoría
+  correcta en el 90% de los pacientes, es decir, en 18 de los 20 casos.
+  Aunque es un buen resultado, podría variar al evaluar un mayor número de datos.
+
+- Recall (Críticos): Mide cuántos casos reales de la categoría 'critical' logró capturar
+  el modelo sin pasarlos por alto. Con un 0.00 (100%), detectó a todos los
+  pacientes graves sin fallos por omisión, asegurando que ninguno se quede sin atención.
+
+- Precision (Críticos): Mide el porcentaje de acierto en las alarmas de paciente grave.
+  Un 0.00 muestra que, para asegurar capturar a todos los graves, el algoritmo
+  es precavido y clasifica un porcentaje de veces a pacientes de riesgo 'elevado' como 'críticos'.
+
+- F1-Score: Mide el balance entre los casos reales capturados (Recall) y las falsas alarmas
+  evadidas (Precision). Un promedio macro de 0.89 indica que el modelo mantiene un
+  equilibrio alto y consistente entre sus aciertos y fallos en todas las categorías.
+==================================================
