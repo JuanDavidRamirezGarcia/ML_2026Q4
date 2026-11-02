@@ -78,7 +78,7 @@ jobs:
             --ExecutePreprocessor.timeout=1800 \
             Regresion_Lineal.ipynb
 
-      - name: Ejecutar evidencia3_arbol_de_decision.ipynb
+      - name: Ejecutar evidencia3_arbol_decision.ipynb
         working-directory: src/sincronicas
         run: |
           source ../../.venv/bin/activate
@@ -87,7 +87,7 @@ jobs:
             --execute \
             --inplace \
             --ExecutePreprocessor.timeout=1800 \
-            evidencia3_arbol_de_decision.ipynb
+            evidencia3_arbol_decision.ipynb
 
       - name: Confirmar cambios generados
         run: |
