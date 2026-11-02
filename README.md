@@ -52,6 +52,14 @@ Andrés Felipe Callejas Jaramillo
 
 ---
 
+## Pregunta de Negocio
+
+- **¿Podemos predecir en tiempo real si un paciente requiere atención Normal, Elevada o Crítica analizando sus signos vitales?**
+
+- ¿Quién se beneficia?: El equipo médico y el personal de triaje en salas de urgencias u hospitales.
+
+- ¿Qué decisión apoya?: Clasificar y priorizar la atención de los pacientes según su gravedad. Permite asignar atención inmediata a quienes estén en estado Crítico, optimizar los recursos del hospital y reducir tiempos de espera en emergencias.
+
 ## 🧠 Selección y Justificación del Modelo frente a la Pregunta de Negocio
 
 - **Tipo de aprendizaje y justificación**: Usamos un modelo de **aprendizaje supervisado** llamado **Árbol de Decisión** porque el conjunto de datos ya contaba con las etiquetas que responden a nuestra pregunta de negocio. La estrategia consiste en entrenar al modelo con una porción de estos datos etiquetados para que aprenda patrones clínicos y sepa clasificar de forma automática a los nuevos pacientes que ingresen al servicio de urgencias.
