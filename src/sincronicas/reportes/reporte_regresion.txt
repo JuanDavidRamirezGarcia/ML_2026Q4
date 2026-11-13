@@ -1,6 +1,6 @@
 ==================================================
 REPORTE AUTOMATIZADO DE MODELOS PREDICTIVOS
-Fecha de ejecución: 2026-11-13 00:38:47
+Fecha de ejecución: 2026-11-13 01:01:10
 ==================================================
 
 1. IDENTIFICACIÓN DEL DATASET Y PREPROCESAMIENTO
