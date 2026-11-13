@@ -102,3 +102,13 @@ jobs:
 
           git commit -m "chore: ejecutar tareas de clasificacion, regresion y entrega 1 [skip ci]"
           git push origin HEAD:main
+
+      - name: Publicar artefacto de reportes y resultados
+        uses: actions/upload-artifact@v4
+        with:
+          name: resultados-actividad-3
+          path: |
+            src/sincronicas/reportes/
+            src/sincronicas/datos/
+            src/sincronicas/evidencia3_arbol_decision.ipynb
+          retention-days: 30
