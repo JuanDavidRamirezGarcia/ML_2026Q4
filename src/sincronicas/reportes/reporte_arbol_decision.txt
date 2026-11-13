@@ -1,0 +1,72 @@
+======================================================================
+REPORTE AUTOMATIZADO DE CLASIFICACIÓN - ÁRBOL DE DECISIÓN
+Fecha de ejecución: 2026-11-13 22:23:07
+======================================================================
+
+1. PREGUNTA DE NEGOCIO Y CONTEXTO CLÍNICO
+----------------------------------------------------------------------
+Pregunta: ¿Podemos predecir en tiempo real si un paciente requiere atención Normal, Elevada o Crítica analizando sus signos vitales?
+Beneficiarios: Equipo médico y personal de triaje en salas de urgencias.
+Decisión que apoya: Priorizar la atención inmediata de pacientes críticos
+y optimizar la asignación de recursos médicos en emergencias.
+
+2. IDENTIFICACIÓN Y DOCUMENTACIÓN DEL DATASET
+----------------------------------------------------------------------
+Nombre: HealthVitalSigns (Datos biométricos y signos vitales)
+Enlace oficial: https://huggingface.co/datasets/infinite-dataset-hub/HealthVitalSigns
+Tamaño total: 100 registros clínicos (sin valores nulos ni duplicados).
+Distribución de clases (risk_category): normal: 41, elevated: 30, critical: 29.
+Preprocesamiento: Se dividió 'blood_pressure' en 'systolic_bp' y 'diastolic_bp'.
+Se descartaron metadatos ('idx', 'timestamp') para conservar solo variables clínicas.
+
+3. PARÁMETROS DEL MODELO Y JUSTIFICACIÓN DE max_depth
+----------------------------------------------------------------------
+- Algoritmo: DecisionTreeClassifier (Aprendizaje Supervisado).
+- Hiperparámetros: criterion='gini', max_depth=4, min_samples_split=2, min_samples_leaf=1, random_state=42.
+- Estrategia de evaluación: Hold-out estratificado (Train 70% / Test 30%) complementado con Validación Cruzada Estratificada.
+- Justificación de max_depth=4: Se evaluaron profundidades de 1 a 6 mediante
+  validación cruzada. Con max_depth <= 2 el árbol presenta subajuste (underfitting),
+  mientras que a partir de max_depth = 4 alcanza la máxima capacidad de separación
+  clínica sin crear ramas redundantes que memoricen ruido.
+
+4. RESULTADOS DE VALIDACIÓN CRUZADA (100% DEL DATASET)
+----------------------------------------------------------------------
+- Esquema: Stratified 5-Fold Cross-Validation (evalúa los 100 casos).
+- Accuracy Promedio (CV): 85.00% (± 8.37%)
+- F1-Score Macro (CV)   : 0.8352 (± 0.0905)
+- Precision Macro (CV)  : 0.8487
+- Recall Macro (CV)     : 0.8389
+
+5. RESULTADOS EN CONJUNTO DE PRUEBA HOLD-OUT (30 CASOS)
+----------------------------------------------------------------------
+- Accuracy Global       : 0.87 (26/30 casos correctos)
+- F1-Score (Macro)      : 0.86
+- Precision (Críticos)  : 0.80
+- Recall (Críticos)     : 0.89
+- F1-Score (Críticos)   : 0.84 (soporte: 9 casos)
+
+6. INTERPRETACIÓN CLÍNICA Y LIMITACIONES
+----------------------------------------------------------------------
+- Accuracy (87%): El modelo acertó la categoría en 26 de 30 pacientes
+  de prueba. Dado el tamaño reducido de la muestra (100 registros totales),
+  los resultados deben tomarse de forma preliminar y como apoyo al criterio médico.
+
+- Recall en Críticos (0.89 / 89%): Capturó el 89% de los
+  9 pacientes realmente graves en el conjunto de prueba, sin omitir casos críticos.
+
+- Precision en Críticos (0.80 / 80%): De las alertas encendidas como
+  'critical', el 80% correspondieron a pacientes graves reales y el
+  20% restante fueron pacientes de riesgo 'elevated' clasificados como
+  críticos por precaución clínica.
+
+- F1-Score Macro (0.86): Refleja un equilibrio consistente entre sensibilidad y
+  precisión a través de las tres categorías (normal, elevated, critical).
+
+7. IMPORTANCIA DE VARIABLES EN EL ÁRBOL
+----------------------------------------------------------------------
+- heart_rate          : 82.82%
+- body_temperature    : 6.35%
+- oxygen_saturation   : 5.38%
+- diastolic_bp        : 4.23%
+- systolic_bp         : 1.23%
+======================================================================
