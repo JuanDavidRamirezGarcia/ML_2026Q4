@@ -6,15 +6,15 @@ Duplicados: 6
 
 Columnas y tipos:
 - age: int64
-- gender: object
+- gender: str
 - weight: int64
 - height: int64
 - exercise_frequency: int64
-- smoking_status: object
-- diet_type: object
-- family_history_of_diseases: object
-- medical_history: object
-- risk_level: object
+- smoking_status: str
+- diet_type: str
+- family_history_of_diseases: str
+- medical_history: str
+- risk_level: str
 - bmi: float64
 - risk_level_encoded: int64
 

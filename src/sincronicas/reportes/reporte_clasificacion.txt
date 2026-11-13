@@ -1,6 +1,6 @@
 ==================================================
 REPORTE AUTOMATIZADO DE CLASIFICACIÓN DE RIESGO
-Fecha de ejecución: 2026-11-02 15:48:43
+Fecha de ejecución: 2026-11-13 00:38:42
 ==================================================
 
 1. IDENTIFICACIÓN DEL DATASET Y PREPROCESAMIENTO
