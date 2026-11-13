@@ -18,14 +18,14 @@ Implementar un flujo de trabajo reproducible que permita:
 3. **Modelo de Regresión Lineal**: Predicción del Índice de Masa Corporal (`bmi`) a partir de la edad (`age`) e interpretación de métricas ($R^2$, MAE, RMSE).
 4. **Modelo de Clasificación (Random Forest)**: Clasificación de categorías de riesgo clínico (`risk_category`) optimizando el *Recall* en la categoría Crítica.
 5. **Generación de Reportes Automatizados**: Exportación automática de resúmenes interpretativos en archivos `.txt`.
-6. **Integración CI/CD**: Ejecución automatizada de todo el pipeline mediante GitHub Actions (`ejecutando WF tareas`).
+6. **Integración CI/CD**: Ejecución automatizada de todo el pipeline mediante GitHub Actions (`Ejecutando WF tareas`).
 
 ## 🎯 Objetivo de la Actividad 3
 Implementar, validar y documentar un modelo interpretable de clasificación mediante **Árboles de Decisión**:
 1. **Modelado Orientado a Objetos (`ArbolDecision`)**: Encapsular el preprocesamiento, división estratificada 70/30, validación cruzada ($k=5$), análisis de profundidad (`max_depth`) y visualización del árbol.
 2. **Visualización y Explicabilidad**: Exportar el diagrama gráfico del árbol (`arbol_decision.png`) y sus reglas lógicas.
 3. **Reportes Clínicos Automatizados (`ReporteArbol`)**: Generar reportes dinámicos en `.txt` que incluyan la pregunta de negocio, enlace al dataset, hiperparámetros, resultados de validación cruzada y métricas por categoría.
-4. **Publicación de Artefactos en CI/CD**: Empaquetar los reportes `.txt`, gráficas `.png` y notebooks ejecutados como artefactos descargables en GitHub Actions (`resultados-actividad-3`).
+4. **Publicación de Artefactos en CI/CD**: Empaquetar los reportes `.txt`, gráficas `.png`, datasets `.csv` y notebooks ejecutados como artefactos descargables en GitHub Actions (`resultados-actividad-3`).
 
 ---
 
@@ -74,14 +74,14 @@ Andrés Felipe Callejas Jaramillo
 - **Justificación de `max_depth` mediante Validación Cruzada (5 Pliegues)**:
   Se evaluaron profundidades de `1` a `6` comparando el rendimiento en entrenamiento frente a validación cruzada estratificada sobre los 100 registros:
 
-  | `max_depth` | Train Accuracy (%) | CV Accuracy (%) | CV Std (±%) | CV F1-Macro |
+  | `max_depth` | Train Accuracy (%) | CV Accuracy (%) | CV Std ($\pm$%) | CV F1-Macro |
   | :---: | :---: | :---: | :---: | :---: |
-  | 1 | 70.50% | 68.00% | ± 2.45% | 0.5355 |
-  | 2 | 94.00% | 88.00% | ± 6.00% | 0.8676 |
-  | 3 | 94.00% | 87.00% | ± 6.78% | 0.8553 |
-  | **4** | **97.75%** | **85.00%** | **± 8.37%** | **0.8352** |
-  | 5 | 98.25% | 85.00% | ± 8.37% | 0.8350 |
-  | 6 | 99.50% | 84.00% | ± 7.35% | 0.8226 |
+  | 1 | 70.50% | 68.00% | $\pm$ 2.45% | 0.5355 |
+  | 2 | 94.00% | 88.00% | $\pm$ 6.00% | 0.8676 |
+  | 3 | 94.00% | 87.00% | $\pm$ 6.78% | 0.8553 |
+  | **4** | **97.75%** | **85.00%** | **$\pm$ 8.37%** | **0.8352** |
+  | 5 | 98.25% | 85.00% | $\pm$ 8.37% | 0.8350 |
+  | 6 | 99.50% | 84.00% | $\pm$ 7.35% | 0.8226 |
 
   Con `max_depth=1` el modelo presenta subajuste (*underfitting*). Con `max_depth=4` el árbol logra capturar las interacciones entre frecuencia cardíaca, temperatura, saturación de oxígeno y presión arterial sin llegar a la memorización extrema de profundidades mayores (`5` o `6`), donde el entrenamiento sube a `99.50%` mientras la validación cruzada desciende.
 
@@ -103,7 +103,7 @@ Al responder **Sí** o **No**, divide a los pacientes en dos subgrupos. En los n
 
 Para evitar depender únicamente de un corte pequeño, se combinó una **Validación Cruzada Estratificada de 5 pliegues** (sobre los 100 registros) con una **evaluación Hold-out estratificada 70/30** (70 entrenamiento / 30 prueba):
 
-- **Accuracy**: El modelo acertó la categoría correcta en el **87%** de los pacientes evaluados en la prueba, es decir, en 26 de 30 casos. Además, al aplicar validación cruzada de 5 pliegues sobre los 100 registros del dataset, el acierto promedio fue del **85%** (± 8.37%). Aunque es un buen comportamiento inicial, los resultados podrían cambiar al evaluar un volumen de datos mucho mayor.
+- **Accuracy**: El modelo acertó la categoría correcta en el **87%** de los pacientes evaluados en la prueba, es decir, en 26 de 30 casos. Además, al aplicar validación cruzada de 5 pliegues sobre los 100 registros del dataset, el acierto promedio fue del **85%** ($\pm$ 8.37%). Aunque es un buen comportamiento inicial, los resultados podrían cambiar al evaluar un volumen de datos mucho mayor.
 - **Recall**: Mide cuántos casos reales de una categoría logró capturar el modelo sin pasarlos por alto. Un **0.89 (89%)** en la clase `critical` significa que detectó a 8 de los 9 pacientes graves reales en la prueba y dejó pasar 1 caso, por lo que hay que tener precaución y mantener siempre la supervisión médica.
 - **Precisión**: Mide el porcentaje de acierto en las alarmas que enciende el modelo. Un **0.80** en `critical` significa que acertó en 4 de cada 5 alertas de paciente grave (8 aciertos de 10 alertas), clasificando por precaución a 2 pacientes de riesgo *elevated* como si fueran *critical*.
 - **F1-Score**: Mide el balance entre los casos reales capturados (Recall) y las falsas alarmas evadidas (Precisión). Un promedio macro de **0.86** en la prueba (y **0.84** en validación cruzada) indica que el modelo mantiene un equilibrio estable entre sus aciertos y fallos en todas las categorías, dentro de las limitaciones de contar con pocos datos.
@@ -148,6 +148,38 @@ De forma preliminar sí. El modelo muestra que analizando la frecuencia cardíac
 
 ---
 
+## ⚙️ Ejecución del Proyecto y Artefactos (CI/CD)
+
+### 1. Ejecución Automática en GitHub Actions y Artefactos
+Cada `git push` hacia la rama `main` activa automáticamente el workflow [`.github/workflows/ejecutar_WF_actividad_1.yml`](.github/workflows/ejecutar_WF_actividad_1.yml), el cual instala las dependencias, descarga los datasets desde Hugging Face, preprocesa los datos, entrena y evalúa los modelos, genera los reportes `.txt` junto con las gráficas `.png` y publica los resultados.
+
+- **Enlace a ejecución exitosa:** [Ver corrida en GitHub Actions (`runs/43338562958`)](https://github.com/JuanDavidRamirezGarcia/ML_2026Q4/actions/runs/43338562958)
+- **Artefacto descargable:** **`resultados-actividad-3`** (empaqueta los 8 archivos generados —reportes `.txt`, gráfica `.png`, datasets `.csv` y notebooks ejecutados— disponible en la sección *Artifacts* al final de la página de la ejecución).
+- **Copia directa en el repositorio:** [`src/sincronicas/reportes/reporte_arbol_decision.txt`](src/sincronicas/reportes/reporte_arbol_decision.txt) y [`src/sincronicas/reportes/arbol_decision.png`](src/sincronicas/reportes/arbol_decision.png).
+
+### 2. Ejecución Local (VS Code / Terminal)
+1. **Clonar el repositorio:**
+   ```bash
+   git clone https://github.com/JuanDavidRamirezGarcia/ML_2026Q4.git
+   cd ML_2026Q4
+   ```
+2. **Crear y activar el entorno virtual:**
+   ```bash
+   python -m venv .venv
+   # En Windows (PowerShell):
+   .venv\Scripts\Activate.ps1
+   # En Linux / macOS:
+   source .venv/bin/activate
+   ```
+3. **Instalar dependencias:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. **Ejecutar el flujo de la Actividad 3:**
+   Abre `src/sincronicas/evidencia3_arbol_decision.ipynb`, selecciona el kernel `.venv` y haz clic en **Run All**. Esto actualizará automáticamente `src/sincronicas/reportes/reporte_arbol_decision.txt` y `src/sincronicas/reportes/arbol_decision.png`.
+
+---
+
 ## 📁 Estructura del Repositorio
 
 ```text
@@ -169,4 +201,16 @@ De forma preliminar sí. El modelo muestra que analizando la frecuencia cardíac
 │       │   ├── health_risk_predictor.csv      # Dataset Actividades 1 y 2
 │       │   └── healthvitalSigns.csv           # Dataset Actividad 3
 │       ├── reportes/
-│       │   ├── health_risk_predictor.
+│       │   ├── health_risk_predictor.txt      # Resumen de ingesta
+│       │   ├── reporte_clasificacion.txt     # Reporte de Random Forest
+│       │   ├── reporte_arbol_decision.txt    # Reporte dinámico de Árbol de Decisión
+│       │   ├── arbol_decision.png             # Diagrama gráfico del Árbol de Decisión
+│       │   └── reporte_regresion.txt         # Reporte de Regresión
+│       ├── evidencia3_arbol_decision.ipynb    # Notebook ejecutable Actividad 3
+│       ├── Clasificacion.ipynb                # Notebook ejecutable Random Forest
+│       ├── Entrega_1.ipynb                    # Notebook de ingesta y exploración
+│       └── Regresion_Lineal.ipynb             # Notebook de Regresión Lineal
+├── .gitignore                                 # Archivos excluidos
+├── README.md                                  # Documentación general
+└── requirements.txt                           # Dependencias del proyecto
+```
