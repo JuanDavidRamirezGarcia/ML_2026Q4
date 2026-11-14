@@ -120,7 +120,14 @@ Para evitar depender únicamente de un corte pequeño, se combinó una **Validac
 ### Respuesta a la Pregunta de Negocio
 **¿Podemos predecir en tiempo real si un paciente requiere atención Normal, Elevada o Crítica analizando sus signos vitales?**
 
-De forma preliminar sí. El modelo muestra que analizando la frecuencia cardíaca, la temperatura corporal, la saturación de oxígeno y la presión arterial es posible clasificar el nivel de riesgo con un **87%** de acierto en prueba y un **85%** en validación cruzada. Sin embargo, debido al tamaño reducido del dataset, los resultados deben usarse con precaución y únicamente como apoyo al criterio clínico.
+**Sí, de forma preliminar como herramienta de apoyo en triaje.** Al someter el árbol entrenado a **4 pacientes reales del conjunto de prueba (`X_test`) que el modelo nunca vio durante el entrenamiento**, el sistema clasificó cada ingreso de manera inmediata acertando en **3 de los 4 casos**:
+
+- **Paciente #52** (`FC`: 90 bpm, `SpO2`: 96%, `Temp`: 99.2 °F, `PA`: 134/87 mmHg) $\rightarrow$ Riesgo real: **`elevated`** | Predicción: **`elevated`** *(Acierto)*.
+- **Paciente #94** (`FC`: 66 bpm, `SpO2`: 99%, `Temp`: 98.9 °F, `PA`: 121/81 mmHg) $\rightarrow$ Riesgo real: **`normal`** | Predicción: **`elevated`** *(Falso positivo preventivo: su presión arterial de 121/81 mmHg supera ligeramente el umbral estándar de 120/80 mmHg)*.
+- **Paciente #70** (`FC`: 116 bpm, `SpO2`: 95%, `Temp`: 101.7 °F, `PA`: 144/91 mmHg) $\rightarrow$ Riesgo real: **`critical`** | Predicción: **`critical`** *(Acierto: detecta correctamente el cuadro grave)*.
+- **Paciente #49** (`FC`: 89 bpm, `SpO2`: 97%, `Temp`: 99.1 °F, `PA`: 127/83 mmHg) $\rightarrow$ Riesgo real: **`elevated`** | Predicción: **`elevated`** *(Acierto)*.
+
+*(Nota técnica: La confianza del `100%` reportada en las hojas del árbol responde a que, con `max_depth=4` sobre 70 registros de entrenamiento, las hojas alcanzan pureza total `gini=0.0`, no a infalibilidad clínica).* Estos resultados confirman que el modelo asigna prioridades de atención en milisegundos con reglas auditables, pero debe operar siempre bajo supervisión del personal médico.
 
 ---
 

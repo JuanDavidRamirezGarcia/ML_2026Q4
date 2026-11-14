@@ -100,7 +100,7 @@ jobs:
             exit 0
           fi
 
-          git commit -m "chore: ejecutar generacion de reporte actividades previas y de lso resultados de la pregunta del negocio [skip ci]"
+          git commit -m "chore: ejecutar generacion de reportes actividades previas y el reporte de la actividad 3 con los resultados de la pregunta del negocio [skip ci]"
           git push origin HEAD:main
 
       - name: Publicar artefacto de reportes y resultados
