@@ -1,6 +1,6 @@
 ======================================================================
 REPORTE AUTOMATIZADO DE CLASIFICACIÓN - ÁRBOL DE DECISIÓN
-Fecha de ejecución: 2026-11-13 22:23:07
+Fecha de ejecución: 2026-11-14 14:43:45
 ======================================================================
 
 1. PREGUNTA DE NEGOCIO Y CONTEXTO CLÍNICO
@@ -52,7 +52,7 @@ Se descartaron metadatos ('idx', 'timestamp') para conservar solo variables clí
   los resultados deben tomarse de forma preliminar y como apoyo al criterio médico.
 
 - Recall en Críticos (0.89 / 89%): Capturó el 89% de los
-  9 pacientes realmente graves en el conjunto de prueba, sin omitir casos críticos.
+  9 pacientes realmente graves en el conjunto de prueba.
 
 - Precision en Críticos (0.80 / 80%): De las alertas encendidas como
   'critical', el 80% correspondieron a pacientes graves reales y el
@@ -69,4 +69,27 @@ Se descartaron metadatos ('idx', 'timestamp') para conservar solo variables clí
 - oxygen_saturation   : 5.38%
 - diastolic_bp        : 4.23%
 - systolic_bp         : 1.23%
+
+8. PRUEBA DE INFERENCIA EN TIEMPO REAL (PACIENTES NO VISTOS)
+----------------------------------------------------------------------
+Se evaluaron 4 registros reales del conjunto de prueba que el modelo nunca
+vio durante el entrenamiento, simulando su ingreso en tiempo real a triaje:
+
+- Paciente #52  | FC:  90 bpm | SpO2: 96% | Temp:  99.2°F | PA: 134/87 mmHg -> Real: elevated | Predicho: elevated (Conf. hoja: 100% | ACIERTO)
+- Paciente #94  | FC:  66 bpm | SpO2: 99% | Temp:  98.9°F | PA: 121/81 mmHg -> Real: normal   | Predicho: elevated (Conf. hoja: 100% | DESVIACIÓN)
+- Paciente #70  | FC: 116 bpm | SpO2: 95% | Temp: 101.7°F | PA: 144/91 mmHg -> Real: critical | Predicho: critical (Conf. hoja: 100% | ACIERTO)
+- Paciente #49  | FC:  89 bpm | SpO2: 97% | Temp:  99.1°F | PA: 127/83 mmHg -> Real: elevated | Predicho: elevated (Conf. hoja: 100% | ACIERTO)
+
+RESPUESTA DIRECTA A LA PREGUNTA DE NEGOCIO:
+¿Podemos predecir en tiempo real si un paciente requiere atención Normal,
+Elevada o Crítica analizando sus signos vitales?
+-> Sí, de forma preliminar como apoyo al triaje. En la prueba sobre 4
+   pacientes no vistos, el árbol clasificó correctamente 3 de 4 casos
+   en milisegundos, identificando con éxito al paciente crítico (FC 116 bpm,
+   Temp 101.7°F, PA 144/91 mmHg) y los casos elevados. En el único caso no
+   acertado (Paciente #94, PA 121/81 mmHg), el modelo aplicó un criterio
+   conservador clasificándolo como 'elevated' en lugar de 'normal' por su
+   presión arterial límite. Además, la confianza del 100% en las hojas refleja
+   pureza en una muestra pequeña (70 casos de entrenamiento), por lo que el
+   sistema debe operar siempre bajo supervisión médica.
 ======================================================================
