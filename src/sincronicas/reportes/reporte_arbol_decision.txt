@@ -1,6 +1,6 @@
 ======================================================================
 REPORTE AUTOMATIZADO DE CLASIFICACIÓN - ÁRBOL DE DECISIÓN
-Fecha de ejecución: 2026-11-14 14:43:45
+Fecha de ejecución: 2026-11-22 16:31:44
 ======================================================================
 
 1. PREGUNTA DE NEGOCIO Y CONTEXTO CLÍNICO
@@ -92,4 +92,22 @@ Elevada o Crítica analizando sus signos vitales?
    presión arterial límite. Además, la confianza del 100% en las hojas refleja
    pureza en una muestra pequeña (70 casos de entrenamiento), por lo que el
    sistema debe operar siempre bajo supervisión médica.
+
+9. RESPUESTA DE NEGOCIO Y RECOMENDACIONES
+----------------------------------------------------------------------
+Respuesta: Sí es posible obtener una clasificación preliminar para apoyar
+el triaje, con un accuracy de hold-out del 87% y un recall crítico de 0.89.
+Sin embargo, el modelo omitió 1 caso crítico real y no debe decidir sin
+supervisión médica.
+
+- Acción inmediata: el personal de triaje puede usar la predicción como
+  prioridad preliminar; el equipo médico debe confirmar la categoría antes
+  de tomar decisiones definitivas.
+- Monitoreo: el líder de urgencias debe registrar predicciones reales y
+  discrepancias para evaluar el desempeño después de cada periodo operativo.
+- Mejora: el equipo de ciencia de datos, junto con el área clínica, debe
+  ampliar el dataset, verificar la estabilidad de las métricas y evaluar
+  ajustes para reducir falsos negativos críticos.
+- Limitación: con solo 100 registros y 30 casos de prueba, los resultados
+  pueden variar en una población hospitalaria distinta.
 ======================================================================

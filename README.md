@@ -133,9 +133,17 @@ Para evitar depender únicamente de un corte pequeño, se combinó una **Validac
 
 ### Representaciones gráficas
 
+#### Árbol de decisión
+
+![Diagrama de Decisiones del Modelo Clínico](src/sincronicas/reportes/arbol_decision.png)
+
 El diagrama del árbol muestra los umbrales evaluados por el modelo, las variables seleccionadas en cada división y la clase asignada en las hojas. Las ramas representan respuestas de Sí/No, los nodos contienen el criterio utilizado y el color indica la predominancia de una clase de riesgo.
 
-La matriz de confusión, disponible como [`matriz_confusion_arbol.png`](src/sincronicas/reportes/matriz_confusion_arbol.png) después de ejecutar el notebook actualizado, debe interpretarse con:
+#### Matriz de confusión
+
+![Matriz de confusión del conjunto de prueba](src/sincronicas/reportes/matriz_confusion_arbol.png)
+
+La matriz de confusión debe interpretarse con:
 
 - **Eje X**: riesgo predicho por el modelo.
 - **Eje Y**: riesgo real registrado en el dataset.
@@ -143,6 +151,17 @@ La matriz de confusión, disponible como [`matriz_confusion_arbol.png`](src/sinc
 - **Celdas fuera de la diagonal**: errores de clasificación.
 
 En la evaluación 70/30 fueron correctos 8 de 9 casos críticos, 7 de 9 elevados y 11 de 12 normales. Los casos críticos omitidos fueron 1 elevado y los casos críticos se confundieron 2 veces con elevados.
+
+### Resultados del reporte automático
+
+El [reporte completo del Árbol de Decisión](src/sincronicas/reportes/reporte_arbol_decision.txt) documenta:
+
+- **Modelo:** `DecisionTreeClassifier` supervisado con `criterion=gini`, `max_depth=4`, `min_samples_split=2`, `min_samples_leaf=1` y `random_state=42`.
+- **Validación:** validación cruzada estratificada de 5 pliegues sobre los 100 registros, con accuracy promedio de **85%** ($\pm$ 8.37%), F1-Macro de **0.8352** y precisión macro de **0.8487**.
+- **Hold-out:** separación estratificada 70/30; accuracy global de **0.87**, F1-Macro de **0.86**, precisión crítica de **0.80** y recall crítico de **0.89**.
+- **Variables:** `heart_rate` tuvo una importancia de **82.82%**, `body_temperature` 6.35%, `oxygen_saturation` 5.38%, `diastolic_bp` 4.23% y `systolic_bp` 1.23%.
+- **Inferencia:** 3 de los 4 pacientes no vistos fueron clasificados correctamente. El modelo detectó al paciente crítico, acertó dos casos elevados y clasificó como elevado un caso real normal.
+- **Limitación:** el modelo omite un caso crítico real en la prueba y las hojas reportan confianza del 100% por pureza de la muestra pequeña, no por certeza clínica absoluta.
 
 ---
 
