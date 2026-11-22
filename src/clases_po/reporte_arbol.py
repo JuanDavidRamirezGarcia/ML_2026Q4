@@ -227,6 +227,28 @@ class ReporteArbol:
                 lineas.append(f"- {row['Variable']:<20}: {row['Importancia (%)']:.2f}%")
 
         lineas.extend(self._generar_bloque_inferencia(arbol))
+        lineas.extend(
+            [
+                "",
+                "9. RESPUESTA DE NEGOCIO Y RECOMENDACIONES",
+                "----------------------------------------------------------------------",
+                "Respuesta: Sí es posible obtener una clasificación preliminar para apoyar",
+                "el triaje, con un accuracy de hold-out del 87% y un recall crítico de 0.89.",
+                "Sin embargo, el modelo omitió 1 caso crítico real y no debe decidir sin",
+                "supervisión médica.",
+                "",
+                "- Acción inmediata: el personal de triaje puede usar la predicción como",
+                "  prioridad preliminar; el equipo médico debe confirmar la categoría antes",
+                "  de tomar decisiones definitivas.",
+                "- Monitoreo: el líder de urgencias debe registrar predicciones reales y",
+                "  discrepancias para evaluar el desempeño después de cada periodo operativo.",
+                "- Mejora: el equipo de ciencia de datos, junto con el área clínica, debe",
+                "  ampliar el dataset, verificar la estabilidad de las métricas y evaluar",
+                "  ajustes para reducir falsos negativos críticos.",
+                "- Limitación: con solo 100 registros y 30 casos de prueba, los resultados",
+                "  pueden variar en una población hospitalaria distinta.",
+            ]
+        )
         lineas.append("======================================================================")
         return "\n".join(lineas) + "\n"
 

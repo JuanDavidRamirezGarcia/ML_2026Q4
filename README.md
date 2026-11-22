@@ -67,10 +67,26 @@ Andrés Felipe Callejas Jaramillo
 
 ## 🧠 Selección y Justificación del Modelo e Hiperparámetros
 
+#### **4. Variables, modelo y entrenamiento**
+
 - **Tipo de aprendizaje y justificación**: Usamos un modelo de **aprendizaje supervisado** llamado **Árbol de Decisión** (`DecisionTreeClassifier`) porque el conjunto de datos cuenta con las etiquetas de riesgo clínico que responden directamente a la pregunta de negocio. Además, ofrece reglas explícitas fáciles de auditar por personal médico.
 - **Variables elegidas**:
   - **Variable Objetivo (`risk_category`)**: Etiquetas *normal*, *elevated* y *critical*.
   - **Variables Predictoras (`heart_rate`, `systolic_bp`, `diastolic_bp`, `oxygen_saturation`, `body_temperature`)**: Signos vitales fisiológicos directos para evaluar la gravedad del paciente.
+
+| Variable | Preparación | Representación y papel en el modelo |
+| :--- | :--- | :--- |
+| `risk_category` | Se obtuvo renombrando `label` y normalizando las etiquetas a minúsculas. Es el resultado clínico conocido. | Variable objetivo supervisada con tres clases: `normal`, `elevated` y `critical`. |
+| `heart_rate` | Se conservó como valor numérico entero en latidos por minuto. | Principal entrada fisiológica utilizada para separar frecuencias normales de patrones elevados o críticos. |
+| `blood_pressure` | Se separó una sola vez en `systolic_bp` y `diastolic_bp`, ambas numéricas y expresadas en mmHg. | Aunque la fuente original contiene una cadena `sistólica/diastólica`, el modelo emplea sus dos componentes independientes. |
+| `systolic_bp` | Derivada de la parte izquierda de `blood_pressure`. | Representa la presión arterial durante la contracción cardíaca. |
+| `diastolic_bp` | Derivada de la parte derecha de `blood_pressure`. | Representa la presión arterial durante la relajación cardíaca. |
+| `oxygen_saturation` | Se conservó como valor numérico entero de porcentaje. | Representa la saturación de oxígeno (`SpO2`) y permite detectar posibles deterioros respiratorios. |
+| `body_temperature` | Se conservó como valor numérico decimal en grados Fahrenheit. | Representa la temperatura corporal y ayuda a identificar cuadros compatibles con fiebre o enfermedad. |
+
+Se excluyeron `idx` y `timestamp` porque son metadatos de identificación y secuenciación, no medidas fisiológicas que aporten una relación estable con el riesgo. No se aplicó escalado ni normalización porque un Árbol de Decisión compara cada variable mediante umbrales independientes y no utiliza distancias. Los datos no tenían valores nulos ni duplicados, por lo que no fue necesaria imputación ni eliminación de filas.
+
+La separación fue estratificada con **70% para entrenamiento (70 registros) y 30% para prueba (30 registros)**, usando `random_state=42`. La estratificación conserva aproximadamente la proporción de las tres clases en ambos grupos y evita que una partición aleatoria omita una categoría.
 - **Justificación de `max_depth` mediante Validación Cruzada (5 Pliegues)**:
   Se evaluaron profundidades de `1` a `6` comparando el rendimiento en entrenamiento frente a validación cruzada estratificada sobre los 100 registros:
 
@@ -101,6 +117,8 @@ Al responder **Sí** o **No**, divide a los pacientes en dos subgrupos. En los n
 
 ## 📈 Resultados e Interpretación de Métricas Clínicas
 
+#### **5. Métricas y resultados**
+
 Para evitar depender únicamente de un corte pequeño, se combinó una **Validación Cruzada Estratificada de 5 pliegues** (sobre los 100 registros) con una **evaluación Hold-out estratificada 70/30** (70 entrenamiento / 30 prueba):
 
 - **Accuracy**: El modelo acertó la categoría correcta en el **87%** de los pacientes evaluados en la prueba, es decir, en 26 de 30 casos. Además, al aplicar validación cruzada de 5 pliegues sobre los 100 registros del dataset, el acierto promedio fue del **85%** ($\pm$ 8.37%). Aunque es un buen comportamiento inicial, los resultados podrían cambiar al evaluar un volumen de datos mucho mayor.
@@ -113,9 +131,24 @@ Para evitar depender únicamente de un corte pequeño, se combinó una **Validac
   - `oxygen_saturation` (Saturación de Oxígeno): **5.38%**
   - `diastolic_bp` / `systolic_bp` (Presión Arterial): **5.46%** (`4.23%` diastólica y `1.23%` sistólica)
 
+### Representaciones gráficas
+
+El diagrama del árbol muestra los umbrales evaluados por el modelo, las variables seleccionadas en cada división y la clase asignada en las hojas. Las ramas representan respuestas de Sí/No, los nodos contienen el criterio utilizado y el color indica la predominancia de una clase de riesgo.
+
+La matriz de confusión, disponible como [`matriz_confusion_arbol.png`](src/sincronicas/reportes/matriz_confusion_arbol.png) después de ejecutar el notebook actualizado, debe interpretarse con:
+
+- **Eje X**: riesgo predicho por el modelo.
+- **Eje Y**: riesgo real registrado en el dataset.
+- **Diagonal**: clasificaciones correctas.
+- **Celdas fuera de la diagonal**: errores de clasificación.
+
+En la evaluación 70/30 fueron correctos 8 de 9 casos críticos, 7 de 9 elevados y 11 de 12 normales. Los casos críticos omitidos fueron 1 elevado y los casos críticos se confundieron 2 veces con elevados.
+
 ---
 
 ## 📋 Hallazgos y Conclusiones del Negocio
+
+#### **6. Respuesta de negocio y recomendaciones basadas en datos**
 
 ### Respuesta a la Pregunta de Negocio
 **¿Podemos predecir en tiempo real si un paciente requiere atención Normal, Elevada o Crítica analizando sus signos vitales?**
@@ -150,8 +183,9 @@ Para evitar depender únicamente de un corte pequeño, se combinó una **Validac
 
 ### Recomendaciones
 
-1. Utilizar el modelo exclusivamente como herramienta de apoyo preliminar en triaje bajo validación constante del personal médico.
-2. Ampliar el dataset con más registros de urgencias para reentrenar el modelo y verificar la estabilidad de las métricas antes de cualquier despliegue.
+1. **Implementación responsable:** el personal de triaje puede usar el modelo como priorización preliminar, pero el equipo médico de urgencias debe validar y confirmar la categoría antes de cualquier atención definitiva. Esta acción se sustenta en el Recall crítico de 0.89 y en la existencia de un caso crítico no detectado.
+2. **Monitoreo responsable:** el líder del servicio de urgencias debe registrar predicciones, resultados reales y casos discordantes. Así podrá detectar cambios del desempeño y actualizar procedimientos antes de ampliar el uso del modelo.
+3. **Mejora responsable:** el equipo de ciencia de datos y el área clínica deben ampliar el dataset con registros hospitalarios diversos, comprobar la calibración y evaluar `class_weight` o ajustes que reduzcan los falsos negativos críticos. Esta medida responde a la muestra limitada de 100 registros y a la inestabilidad observada por validación cruzada.
 
 ---
 

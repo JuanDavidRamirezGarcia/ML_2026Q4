@@ -8,7 +8,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.tree import DecisionTreeClassifier, plot_tree, export_text
 from sklearn.model_selection import train_test_split, StratifiedKFold, cross_validate
-from sklearn.metrics import accuracy_score, f1_score, classification_report, confusion_matrix
+from sklearn.metrics import (
+    accuracy_score,
+    f1_score,
+    classification_report,
+    confusion_matrix,
+    ConfusionMatrixDisplay,
+)
 
 # Aumentar el límite de recursión a nivel global para renderizado gráfico
 sys.setrecursionlimit(10000)
@@ -206,6 +212,36 @@ class ArbolDecision:
                 "Importancia (%)": self.modelo.feature_importances_ * 100,
             }
         ).sort_values(by="Importancia (%)", ascending=False)
+
+    def graficar_matriz_confusion(
+        self,
+        ruta_guardado: str | Path | None = None,
+    ) -> None:
+        """Muestra y guarda visualmente la matriz de confusión del conjunto de prueba."""
+        if self.y_test is None or self.predicciones is None:
+            raise ValueError("Debes ejecutar 'predecir' antes de graficar la matriz.")
+
+        matriz = confusion_matrix(
+            self.y_test,
+            self.predicciones,
+            labels=self.modelo.classes_,
+        )
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ConfusionMatrixDisplay(
+            confusion_matrix=matriz,
+            display_labels=self.modelo.classes_,
+        ).plot(cmap="Blues", values_format="d", ax=ax)
+        ax.set_title("Matriz de confusión - Conjunto de prueba (70/30)")
+        ax.set_xlabel("Riesgo predicho")
+        ax.set_ylabel("Riesgo real")
+        plt.tight_layout()
+
+        if ruta_guardado is not None:
+            path = Path(ruta_guardado)
+            path.parent.mkdir(parents=True, exist_ok=True)
+            fig.savefig(path, dpi=300, bbox_inches="tight")
+
+        plt.show()
 
     def obtener_parametros(self) -> dict[str, object]:
         """Retorna los hiperparámetros activos del modelo."""
