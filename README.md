@@ -133,12 +133,6 @@ Para evitar depender únicamente de un corte pequeño, se combinó una **Validac
 
 ### Representaciones gráficas
 
-#### Árbol de decisión
-
-![Diagrama de Decisiones del Modelo Clínico](src/sincronicas/reportes/arbol_decision.png)
-
-El diagrama del árbol muestra los umbrales evaluados por el modelo, las variables seleccionadas en cada división y la clase asignada en las hojas. Las ramas representan respuestas de Sí/No, los nodos contienen el criterio utilizado y el color indica la predominancia de una clase de riesgo.
-
 #### Matriz de confusión
 
 ![Matriz de confusión del conjunto de prueba](src/sincronicas/reportes/matriz_confusion_arbol.png)
