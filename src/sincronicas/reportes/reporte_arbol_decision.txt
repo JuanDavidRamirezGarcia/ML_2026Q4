@@ -1,6 +1,6 @@
 ======================================================================
 REPORTE AUTOMATIZADO DE CLASIFICACIÓN - ÁRBOL DE DECISIÓN
-Fecha de ejecución: 2026-11-22 21:27:22
+Fecha de ejecución: 2026-11-22 16:51:31
 ======================================================================
 
 1. PREGUNTA DE NEGOCIO Y CONTEXTO CLÍNICO
